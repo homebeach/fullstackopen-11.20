@@ -2,6 +2,28 @@ import request from 'supertest'
 import { server } from '../index.js'
 import Person from '../models/person.js'
 
+/**
+ * API Tests for the /api/persons and related endpoints.
+ *
+ * This file contains unit tests for the RESTful API routes handling person records
+ * (create, read, update, delete) using the Express server and MongoDB (Mongoose) model.
+ * The tests ensure correct behavior of the endpoints for:
+ * - Retrieving all persons (`GET /api/persons`)
+ * - Retrieving a single person by ID (`GET /api/persons/:id`)
+ * - Updating a person (`PUT /api/persons/:id`)
+ * - Deleting a person (`DELETE /api/persons/:id`)
+ * - Retrieving information about the phonebook (`GET /api/info`)
+ * - Handling unknown endpoints (`GET /unknown`)
+ *
+ * Mocking of the `Person` model and `mongoose` library is done using Jest to isolate
+ * the API logic from the actual database and ensure the tests are fast and deterministic.
+ *
+ * The tests use the Supertest library to simulate HTTP requests and assert responses.
+ *
+ * Author: Petri Kotiranta
+ * Created: 9.11.2024
+ */
+
 jest.mock('../models/person', () => {
   const actualModule = jest.requireActual('../models/person')
   return {
