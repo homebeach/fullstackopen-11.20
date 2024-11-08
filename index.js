@@ -4,7 +4,6 @@ dotenv.config()
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
-
 import Person from './models/person.js'
 
 const app = express()
@@ -49,6 +48,7 @@ app.get('/api/persons', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+  // If 'content' is missing from the request body, return an error
   if (body.content === undefined) {
     return response.status(400).json({ error: 'content missing' })
   }
@@ -58,18 +58,19 @@ app.post('/api/persons', (request, response) => {
     number: body.number,
   })
 
-  person.validate()
-    .then(() => person.save())
+  person.validate() // Ensure the data is valid
+    .then(() => person.save()) // Save the new person
     .then(savedPerson => {
-      response.json(savedPerson)
+      // Return the saved person in the response
+      response.status(200).json(savedPerson)
     })
     .catch(error => {
-      response.status(400).json({ error: error.message })
+      console.error('Error saving person:', error) // Log the error
+      response.status(500).json({ error: 'Internal server error' })
     })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
@@ -118,7 +119,10 @@ app.use(unknownEndpoint)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
+
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
 
+// Export app and server for testing
+export { app, server }
