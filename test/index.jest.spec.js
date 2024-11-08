@@ -18,12 +18,24 @@ jest.mock('../models/person', () => {
   }
 })
 
+jest.mock('mongoose', () => {
+  const originalMongoose = jest.requireActual('mongoose')
+  return {
+    ...originalMongoose,
+    connect: jest.fn().mockResolvedValue(),
+    connection: {
+      close: jest.fn().mockResolvedValue(),
+    },
+  }
+})
+
+
 beforeEach(() => {
   jest.resetModules()
   jest.clearAllMocks()
 })
 
-afterAll(() => {
+afterAll(async () => {
   server.close()
 })
 
